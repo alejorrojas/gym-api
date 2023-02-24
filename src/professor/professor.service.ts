@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { CreateProfessorDTO } from './professor.dto';
 import { Professor } from './professor.entity';
 import { hash } from 'bcryptjs';
@@ -11,6 +11,10 @@ export class ProfessorService {
     @InjectRepository(Professor)
     private professorRepository: Repository<Professor>,
   ) {}
+
+  getAll() {
+    return this.professorRepository.find();
+  }
 
   async createProfessor(professor: CreateProfessorDTO) {
     // Define the expiration period
@@ -30,7 +34,7 @@ export class ProfessorService {
     return this.professorRepository.save(newProf);
   }
 
-  // deleteProfessor(name: string) {
-  //   return this.professorRepository.delete(name);
-  // }
+  deleteProfessor(id: number) {
+    return this.professorRepository.delete({ id });
+  }
 }
