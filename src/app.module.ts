@@ -3,7 +3,9 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { Professor } from './professor/professor.entity';
 import { ProfessorModule } from './professor/professor.module';
+import { StudentModule } from './student/student.module';
 
 @Module({
   imports: [
@@ -17,10 +19,11 @@ import { ProfessorModule } from './professor/professor.module';
       username: process.env.MYSQLUSER,
       password: process.env.MYSQLPASSWORD,
       database: process.env.MYSQLDATABASE,
-      entities: [__dirname + `/**/*.entity{.ts, .js}`],
+      entities: [Professor],
       synchronize: true,
     }),
     ProfessorModule,
+    StudentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
