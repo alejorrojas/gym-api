@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
-import { CreateProfessorDTO } from './professor.dto';
+import { CreateProfessorDTO, UpdateProfessorDTO } from './DTO/professor.dto';
 import { Professor } from './professor.entity';
 import { hash } from 'bcryptjs';
 
@@ -36,5 +36,9 @@ export class ProfessorService {
 
   deleteProfessor(id: number) {
     return this.professorRepository.delete({ id });
+  }
+
+  updateProfessor(id: number, professor: UpdateProfessorDTO) {
+    return this.professorRepository.update({ id }, professor);
   }
 }
