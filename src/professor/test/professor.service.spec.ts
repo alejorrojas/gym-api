@@ -26,4 +26,21 @@ describe('ProfessorService', () => {
       expect(result.length).toBeGreaterThan(1);
     });
   });
+  describe('Create', () => {
+    it('should create successfully', async () => {
+      const dto = { name: 'Tom', password: 'Lennon' };
+
+      const result = await service.create(dto);
+      expect(result.name).toBe('Tom');
+      expect(mockRepository.create).toHaveBeenCalled();
+    });
+  });
+  describe('Update', () => {
+    xit('should update successfully', async () => {
+      const dto = { active: true };
+      const result = service.update(1, dto);
+      // expect(result).toEqual({ id: 1, ...dto });
+      expect(mockRepository.update).toHaveBeenCalled();
+    });
+  });
 });
