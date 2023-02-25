@@ -22,25 +22,19 @@ export class ProfessorController {
 
   @Post()
   createProfessor(@Body() inputProfessor: CreateProfessorDTO) {
-    return this.service.createProfessor(inputProfessor);
+    return this.service.create(inputProfessor);
   }
 
   @Delete(':id')
-  async deleteProfessor(@Param('id', ParseIntPipe) id: number) {
-    const res = await this.service.deleteProfessor(id);
-
-    if (res.affected) return { message: 'Delete successfully' };
-    return { message: 'Something went wrong :(' };
+  deleteProfessor(@Param('id', ParseIntPipe) id: number) {
+    return this.service.delete(id);
   }
 
   @Patch(':id')
-  async updateProfessor(
+  updateProfessor(
     @Param('id', ParseIntPipe) id: number,
     @Body() inputProfessor: UpdateProfessorDTO,
   ) {
-    const res = await this.service.updateProfessor(id, inputProfessor);
-
-    if (res.affected) return { message: 'Update successfully' };
-    return { message: 'Something went wrong :(' };
+    return this.service.update(id, inputProfessor);
   }
 }
