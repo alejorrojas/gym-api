@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateProfessorDTO, UpdateProfessorDTO } from './DTO/professor.dto';
 import { Professor } from './professor.entity';
 import { hash } from 'bcryptjs';
