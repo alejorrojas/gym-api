@@ -6,4 +6,6 @@ export class CreateProfessorDTO {
 export class UpdateProfessorDTO {
   name?: string;
   password?: string;
+  active?: boolean;
+  expiration_date?: Date;
 }

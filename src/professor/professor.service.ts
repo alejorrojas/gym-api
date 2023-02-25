@@ -36,12 +36,6 @@ export class ProfessorService {
       );
     }
 
-    if (!professor.name || !professor.password)
-      return new HttpException(
-        'Name and password are required',
-        HttpStatus.CONFLICT,
-      );
-
     // Define the expiration period
     const date = new Date();
     date.setDate(date.getDate() + 30);
@@ -60,21 +54,23 @@ export class ProfessorService {
   }
 
   async delete(id: number) {
-    const professorFound = await this.professorRepository.findOne({
-      where: {
-        id,
-      },
-    });
+    const result = await this.professorRepository.delete({ id });
 
-    if (!professorFound) {
+    if (!result.affected) {
       return new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
-    const result = await this.professorRepository.delete({ id });
-    if (result.affected) return { message: 'Delete successfully' };
+    return { message: 'Delete successfully' };
   }
 
   async update(id: number, professor: UpdateProfessorDTO) {
+    if (!professor) {
+      return new HttpException(
+        'Attributes and values to modify are required',
+        HttpStatus.CONFLICT,
+      );
+    }
+
     const professorFound = await this.professorRepository.findOne({
       where: {
         id,
