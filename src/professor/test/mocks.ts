@@ -38,7 +38,12 @@ export const mockService = {
   }),
 };
 
-
+interface FindOneOpts {
+  where: {
+    id?: number;
+    name?: string;
+  };
+}
 
 export const mockRepository = {
   find: jest.fn(() => {
@@ -46,15 +51,15 @@ export const mockRepository = {
     const professor2 = new Professor();
     return [professor1, professor2];
   }),
-  findOne: jest.fn((options: FindOneOptions) => {
-    const {where: {}} = options
-    // if (where.name === 'Test') return notDuplicate;
-    // if (where.id !== 1) return notFound;
+  findOne: jest.fn(({ where: { id = 1, name } }: FindOneOpts) => {
+    if (name === 'Test') return notDuplicate;
+    if (id !== 1) return notFound;
     return undefined;
   }),
   create: jest.fn((dto) => dto),
   save: jest.fn((professor) => Promise.resolve(professor)),
-  update: jest.fn().mockImplementation((id, dto) => {
-    return { id, ...dto };
+  update: jest.fn(() => {
+    const success = { message: 'Update successfully' };
+    return success;
   }),
 };

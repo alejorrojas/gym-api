@@ -37,9 +37,10 @@ describe('ProfessorService', () => {
   });
   describe('Update', () => {
     xit('should update successfully', async () => {
-      const dto = { active: true };
-      const result = service.update(1, dto);
-      // expect(result).toEqual({ id: 1, ...dto });
+      const dto = { name: 'Tim', active: true };
+      const result = await service.update(1, dto);
+      expect(result.message).toBe('Update successfully');
+      expect(mockRepository.findOne).toHaveBeenCalled();
       expect(mockRepository.update).toHaveBeenCalled();
     });
   });
