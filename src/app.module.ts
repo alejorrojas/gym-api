@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Professor } from './professor/professor.entity';
 import { ProfessorModule } from './professor/professor.module';
+import { Student } from './student/student.entity';
 import { StudentModule } from './student/student.module';
 
 @Module({
@@ -19,7 +20,7 @@ import { StudentModule } from './student/student.module';
       username: process.env.MYSQLUSER,
       password: process.env.MYSQLPASSWORD,
       database: process.env.MYSQLDATABASE,
-      entities: [Professor],
+      entities: [Professor, Student],
       synchronize: true,
     }),
     ProfessorModule,

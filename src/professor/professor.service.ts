@@ -13,7 +13,14 @@ export class ProfessorService {
   ) {}
 
   getAll() {
-    return this.professorRepository.find();
+    return this.professorRepository.find({ relations: ['students'] });
+  }
+
+  findOne(id: number) {
+    return this.professorRepository.findOne({
+      where: { id },
+      relations: ['students'],
+    });
   }
 
   async create(professor: CreateProfessorDTO) {

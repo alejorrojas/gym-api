@@ -1,9 +1,8 @@
-import { FindOneOptions } from 'typeorm';
 import { CreateProfessorDTO, UpdateProfessorDTO } from '../DTO/professor.dto';
 import { Professor } from '../professor.entity';
 
 const notDuplicate = { message: 'This username already exists' };
-const notFound = { message: 'User not found' };
+const notFound = { message: 'Professor not found' };
 const notEmpty = { message: 'Name and password are required' };
 const notBody = { message: 'Attributes and values to modify are required' };
 

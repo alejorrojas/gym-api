@@ -61,7 +61,7 @@ describe('ProfessorController', () => {
     });
     it('should throw an error if the id is not found', async () => {
       const response = await controller.deleteProfessor(99991);
-      expect(response.message).toBe('User not found');
+      expect(response.message).toBe('Professor not found');
     });
   });
   describe('Patch', () => {
@@ -75,7 +75,7 @@ describe('ProfessorController', () => {
       const result = await controller.updateProfessor(99991, {
         active: true,
       });
-      expect(result.message).toBe('User not found');
+      expect(result.message).toBe('Professor not found');
     });
     it('should throw an error if the body is empty', async () => {
       const result = await controller.updateProfessor(99991, undefined);

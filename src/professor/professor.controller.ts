@@ -20,6 +20,11 @@ export class ProfessorController {
     return this.service.getAll();
   }
 
+  @Get(':id')
+  getProfessor(@Param('id', ParseIntPipe) id: number) {
+    return this.service.findOne(id);
+  }
+
   @Post()
   createProfessor(@Body() inputProfessor: CreateProfessorDTO) {
     return this.service.create(inputProfessor);
