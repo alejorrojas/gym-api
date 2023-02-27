@@ -102,10 +102,10 @@ export class StudentService {
   }
 
   async updateExpiration(name: string) {
-    const now = new Date();
+    const dateNow = new Date();
     const result = await this.studentRepository.update(
       { name },
-      { active: false, attendance_today: false, update_at: now },
+      { active: false, attendance_today: false, update_at: dateNow },
     );
 
     if (result.affected)
@@ -115,8 +115,20 @@ export class StudentService {
       );
   }
 
+  //Function that returns the difference in days between two dates
+  isNewDay(start: Date, end: Date) {
+    const dayStart = start.getDate();
+    const dayEnd = end.getDate();
+    const monthStart = start.getMonth();
+    const monthEnd = end.getMonth();
+
+    if (dayEnd > dayStart || monthEnd > monthStart) return true;
+    return false;
+  }
+
   async checkAttendance(student: AttendanceStudentDTO) {
-    const now = new Date();
+    const now = new Date('2023-02-28 00:00:00');
+    // const now = new Date();
     //Verify if the student exits
     const studentFound = await this.studentRepository.findOne({
       where: {
@@ -131,6 +143,11 @@ export class StudentService {
     //Verify student's expiration date
     if (this.isExpired(studentFound.expiration_date)) {
       this.updateExpiration(student.name);
+    }
+
+    //Verify if is a new day in order to reset attendance
+    if (this.isNewDay(studentFound.update_at, now)) {
+      studentFound.attendance_today = false;
     }
 
     //Verify student's attendance
@@ -148,7 +165,7 @@ export class StudentService {
     );
 
     if (result.affected)
-      return { message: `${student.name}'s attendance successfully` };
+      return { message: `${student.name}'s attendance check successfully` };
     else
       return new HttpException(
         'Sorry, we could not update the student info',

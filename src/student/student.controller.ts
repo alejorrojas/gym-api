@@ -34,7 +34,7 @@ export class StudentController {
     return this.service.delete(id);
   }
 
-  @Patch()
+  @Patch('create')
   updateStudent(@Body() student: UpdateStudentDTO) {
     return this.service.update(student);
   }
