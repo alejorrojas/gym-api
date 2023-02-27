@@ -12,10 +12,17 @@ export class ProfessorService {
     private professorRepository: Repository<Professor>,
   ) {}
 
+  /**
+   * Get all the professors
+   */
   getAll() {
     return this.professorRepository.find({ relations: ['students'] });
   }
 
+  /**
+   * Find a professor's information
+   * @param {number} id - used to find the record
+   */
   findOne(id: number) {
     return this.professorRepository.findOne({
       where: { id },
@@ -23,6 +30,10 @@ export class ProfessorService {
     });
   }
 
+  /**
+   * Create a professor
+   * @param {CreateProfessorDTO} professor - body required to create the new record
+   */
   async create(professor: CreateProfessorDTO) {
     if (!professor.name || !professor.password)
       return new HttpException(
@@ -60,6 +71,10 @@ export class ProfessorService {
     return this.professorRepository.save(newProf);
   }
 
+  /**
+   * Delete a professor
+   * @param {number} id - used to find and delete the record
+   */
   async delete(id: number) {
     const result = await this.professorRepository.delete({ id });
 
@@ -70,6 +85,11 @@ export class ProfessorService {
     return { message: 'Delete successfully' };
   }
 
+  /**
+   * Delete a professor
+   * @param {number} id - used to find and update the record
+   * @param {UpdateProfessorDTO} professor - update payload
+   */
   async update(id: number, professor: UpdateProfessorDTO) {
     if (!professor) {
       return new HttpException(

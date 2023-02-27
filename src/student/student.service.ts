@@ -3,11 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { hash } from 'bcryptjs';
 import { ProfessorService } from 'src/professor/professor.service';
 import { Repository } from 'typeorm';
-import {
-  AttendanceStudentDTO,
-  CreateStudentDTO,
-  UpdateStudentDTO,
-} from './DTO/student.dto';
+import { CreateStudentDTO, UpdateStudentDTO } from './DTO/student.dto';
 import { Student } from './student.entity';
 
 @Injectable()
@@ -17,6 +13,11 @@ export class StudentService {
     private professorService: ProfessorService,
   ) {}
 
+  /**
+   * Get all the students
+   *
+   * Additionally updates the student's "attendance_today" property if is a new calendar day
+   */
   async getAll() {
     const now = new Date();
     const students = await this.studentRepository.find();
@@ -30,7 +31,10 @@ export class StudentService {
     return students;
   }
 
-  //Update the attendance of an student
+  /**
+   * Update a student's "attendance_today" property
+   *@param {Student} student - used to find and update the record
+   */
   setNewDay(student: Student) {
     return this.studentRepository.update(
       { id: student.id },
@@ -38,6 +42,10 @@ export class StudentService {
     );
   }
 
+  /**
+   * Creates a new student
+   *@param {CreateStudentDTO} student - body required to create the new record
+   */
   async create(student: CreateStudentDTO) {
     const professorFound = await this.professorService.findOne(
       student.professorId,
@@ -78,6 +86,10 @@ export class StudentService {
     return this.studentRepository.save(newStudent);
   }
 
+  /**
+   * Update a student
+   *@param {UpdateStudentDTO} student - update payload
+   */
   async update(student: UpdateStudentDTO) {
     const studentFound = await this.studentRepository.findOne({
       where: {
@@ -102,6 +114,10 @@ export class StudentService {
       );
   }
 
+  /**
+   * Delete a student
+   *@param {number} id - used to find and delete the record
+   */
   async delete(id: number) {
     const result = await this.studentRepository.delete({ id });
 
@@ -112,13 +128,22 @@ export class StudentService {
     return { message: 'Delete successfully' };
   }
 
+  /**
+   * Check if the student's membership is no longer valid
+   *@param {Date} expirationDate
+   */
   isExpired(expirationDate: Date) {
     const dateNow = new Date();
     if (dateNow > expirationDate) return true;
     return false;
   }
 
-  //Function that updates the expiration date
+  /**
+   * Sets the student membership's state to no longer valid
+   *
+   * Define the "active" property to false
+   * @param {string} name - used to find and update the record
+   */
   async updateExpiration(name: string) {
     const dateNow = new Date();
     const result = await this.studentRepository.update(
@@ -133,7 +158,11 @@ export class StudentService {
       );
   }
 
-  //Function that returns the difference in days between two dates
+  /**
+   * Check if is a new calendar day comparing two dates
+   * @param {Date} start - the "lower" date
+   * @param {Date} end - the "higher" date
+   */
   isNewDay(start: Date, end: Date) {
     const dayStart = start.getDate();
     const dayEnd = end.getDate();
@@ -144,13 +173,19 @@ export class StudentService {
     return false;
   }
 
-  async checkAttendance(student: AttendanceStudentDTO) {
+  /**
+   * Update the student's "attendance_today" property
+   *
+   * Manages the entire process of taking attendance
+   * @param {string} name - used to find and update the record
+   */
+  async checkAttendance(name: string) {
     const now = new Date();
 
     //Verify if the student exits
     const studentFound = await this.studentRepository.findOne({
       where: {
-        name: student.name,
+        name,
       },
     });
 
@@ -160,7 +195,7 @@ export class StudentService {
 
     //Verify student membership's expiration date
     if (this.isExpired(studentFound.expiration_date)) {
-      this.updateExpiration(student.name);
+      this.updateExpiration(name);
     }
 
     //Verify if is a new day in order to reset attendance
@@ -171,19 +206,19 @@ export class StudentService {
     //Verify student's attendance
     if (studentFound.attendance_today) {
       return new HttpException(
-        `Sorry, ${student.name} has already attended today`,
+        `Sorry, ${name} has already attended today`,
         HttpStatus.FORBIDDEN,
       );
     }
 
     //Update student attendance
     const result = await this.studentRepository.update(
-      { name: student.name },
+      { name },
       { attendance_today: true, update_at: now },
     );
 
     if (result.affected)
-      return { message: `${student.name}'s attendance check successfully` };
+      return { message: `${name}'s attendance check successfully` };
     else
       return new HttpException(
         'Sorry, we could not update the student info',

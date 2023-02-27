@@ -11,7 +11,3 @@ export class UpdateStudentDTO {
   active?: boolean;
   expiration_date?: Date;
 }
-
-export class AttendanceStudentDTO {
-  name: string;
-}
