@@ -8,11 +8,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import {
-  AttendanceStudentDTO,
-  CreateStudentDTO,
-  UpdateStudentDTO,
-} from './DTO/student.dto';
+import { CreateStudentDTO, UpdateStudentDTO } from './DTO/student.dto';
 import { StudentService } from './student.service';
 
 @Controller('students')
@@ -40,7 +36,7 @@ export class StudentController {
   }
 
   @Patch('attendance')
-  updateStudentAttendance(@Body() student: AttendanceStudentDTO) {
-    return this.service.checkAttendance(student);
+  updateStudentAttendance(@Body() name: string) {
+    return this.service.checkAttendance(name);
   }
 }
