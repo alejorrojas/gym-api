@@ -17,8 +17,25 @@ export class StudentService {
     private professorService: ProfessorService,
   ) {}
 
-  getAll() {
-    return this.studentRepository.find({ relations: ['professor'] });
+  async getAll() {
+    const now = new Date();
+    const students = await this.studentRepository.find();
+
+    //Verify if is a new day in order to reset attendance
+    for (const student of students) {
+      if (this.isNewDay(student.update_at, now)) {
+        await this.setNewDay(student);
+      }
+    }
+    return students;
+  }
+
+  //Update the attendance of an student
+  setNewDay(student: Student) {
+    return this.studentRepository.update(
+      { id: student.id },
+      { attendance_today: false },
+    );
   }
 
   async create(student: CreateStudentDTO) {
@@ -101,6 +118,7 @@ export class StudentService {
     return false;
   }
 
+  //Function that updates the expiration date
   async updateExpiration(name: string) {
     const dateNow = new Date();
     const result = await this.studentRepository.update(
@@ -127,8 +145,8 @@ export class StudentService {
   }
 
   async checkAttendance(student: AttendanceStudentDTO) {
-    const now = new Date('2023-02-28 00:00:00');
-    // const now = new Date();
+    const now = new Date();
+
     //Verify if the student exits
     const studentFound = await this.studentRepository.findOne({
       where: {
@@ -140,7 +158,7 @@ export class StudentService {
       return new HttpException('Student not found', HttpStatus.NOT_FOUND);
     }
 
-    //Verify student's expiration date
+    //Verify student membership's expiration date
     if (this.isExpired(studentFound.expiration_date)) {
       this.updateExpiration(student.name);
     }
