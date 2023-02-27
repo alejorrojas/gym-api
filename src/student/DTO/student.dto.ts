@@ -3,3 +3,15 @@ export class CreateStudentDTO {
   password?: string;
   professorId: number;
 }
+
+export class UpdateStudentDTO {
+  id: number;
+  name?: string;
+  password?: string;
+  active?: boolean;
+  expiration_date?: Date;
+}
+
+export class AttendanceStudentDTO {
+  name: string;
+}

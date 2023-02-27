@@ -3,7 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { hash } from 'bcryptjs';
 import { ProfessorService } from 'src/professor/professor.service';
 import { Repository } from 'typeorm';
-import { CreateStudentDTO } from './DTO/student.dto';
+import {
+  AttendanceStudentDTO,
+  CreateStudentDTO,
+  UpdateStudentDTO,
+} from './DTO/student.dto';
 import { Student } from './student.entity';
 
 @Injectable()
@@ -55,5 +59,100 @@ export class StudentService {
     };
     const newStudent = this.studentRepository.create(normalizeStudent);
     return this.studentRepository.save(newStudent);
+  }
+
+  async update(student: UpdateStudentDTO) {
+    const studentFound = await this.studentRepository.findOne({
+      where: {
+        id: student.id,
+      },
+    });
+
+    if (!studentFound) {
+      return new HttpException('Student not found', HttpStatus.NOT_FOUND);
+    }
+
+    const result = await this.studentRepository.update(
+      { id: student.id },
+      student,
+    );
+
+    if (result.affected) return { message: 'Update successfully' };
+    else
+      return new HttpException(
+        'Sorry, we could not update the student info',
+        HttpStatus.CONFLICT,
+      );
+  }
+
+  async delete(id: number) {
+    const result = await this.studentRepository.delete({ id });
+
+    if (!result.affected) {
+      return new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    return { message: 'Delete successfully' };
+  }
+
+  isExpired(expirationDate: Date) {
+    const dateNow = new Date();
+    if (dateNow > expirationDate) return true;
+    return false;
+  }
+
+  async updateExpiration(name: string) {
+    const now = new Date();
+    const result = await this.studentRepository.update(
+      { name },
+      { active: false, attendance_today: false, update_at: now },
+    );
+
+    if (result.affected)
+      return new HttpException(
+        `${name}'s membership has already expired`,
+        HttpStatus.FORBIDDEN,
+      );
+  }
+
+  async checkAttendance(student: AttendanceStudentDTO) {
+    const now = new Date();
+    //Verify if the student exits
+    const studentFound = await this.studentRepository.findOne({
+      where: {
+        name: student.name,
+      },
+    });
+
+    if (!studentFound) {
+      return new HttpException('Student not found', HttpStatus.NOT_FOUND);
+    }
+
+    //Verify student's expiration date
+    if (this.isExpired(studentFound.expiration_date)) {
+      this.updateExpiration(student.name);
+    }
+
+    //Verify student's attendance
+    if (studentFound.attendance_today) {
+      return new HttpException(
+        `Sorry, ${student.name} has already attended today`,
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    //Update student attendance
+    const result = await this.studentRepository.update(
+      { name: student.name },
+      { attendance_today: true, update_at: now },
+    );
+
+    if (result.affected)
+      return { message: `${student.name}'s attendance successfully` };
+    else
+      return new HttpException(
+        'Sorry, we could not update the student info',
+        HttpStatus.CONFLICT,
+      );
   }
 }

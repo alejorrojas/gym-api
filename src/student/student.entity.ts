@@ -1,5 +1,11 @@
 import { Professor } from 'src/professor/professor.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Student {
@@ -17,6 +23,12 @@ export class Student {
 
   @Column()
   expiration_date: Date;
+
+  @Column({ default: false, nullable: true })
+  attendance_today: boolean;
+
+  @UpdateDateColumn()
+  update_at: Date;
 
   @Column()
   professorId: number;
