@@ -48,7 +48,7 @@ Open http://localhost:3000/ to view it in the browser.
 
 ## Environment Variables ⚙
 
-To run this project, you will need to add the following environment variables to your .env file, all related to a PostgreSQL database
+To run this project, you will need to add the following environment variables to your .env file, all related to a MySQL database
 
 `MYSQLDATABASE`
 `MYSQLPASSWORD`
