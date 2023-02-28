@@ -7,6 +7,7 @@ import { Professor } from './professor/professor.entity';
 import { ProfessorModule } from './professor/professor.module';
 import { Student } from './student/student.entity';
 import { StudentModule } from './student/student.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { StudentModule } from './student/student.module';
     }),
     ProfessorModule,
     StudentModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

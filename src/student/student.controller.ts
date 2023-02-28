@@ -8,9 +8,13 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { CreateStudentDTO, UpdateStudentDTO } from './DTO/student.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { AttendanceStudentDTO } from './dto/attendance-student.dto';
+import { CreateStudentDTO } from './dto/create-student.dto';
+import { UpdateStudentDTO } from './dto/update-student.dto';
 import { StudentService } from './student.service';
 
+@ApiTags('students')
 @Controller('students')
 export class StudentController {
   constructor(private service: StudentService) {}
@@ -30,13 +34,13 @@ export class StudentController {
     return this.service.delete(id);
   }
 
-  @Patch('create')
+  @Patch()
   updateStudent(@Body() student: UpdateStudentDTO) {
     return this.service.update(student);
   }
 
   @Patch('attendance')
-  updateStudentAttendance(@Body() name: string) {
-    return this.service.checkAttendance(name);
+  updateStudentAttendance(@Body() student: AttendanceStudentDTO) {
+    return this.service.checkAttendance(student);
   }
 }

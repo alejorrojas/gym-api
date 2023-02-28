@@ -3,7 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { hash } from 'bcryptjs';
 import { ProfessorService } from 'src/professor/professor.service';
 import { Repository } from 'typeorm';
-import { CreateStudentDTO, UpdateStudentDTO } from './DTO/student.dto';
+import { AttendanceStudentDTO } from './dto/attendance-student.dto';
+import { CreateStudentDTO } from './dto/create-student.dto';
+import { UpdateStudentDTO } from './dto/update-student.dto';
 import { Student } from './student.entity';
 
 @Injectable()
@@ -177,15 +179,15 @@ export class StudentService {
    * Update the student's "attendance_today" property
    *
    * Manages the entire process of taking attendance
-   * @param {string} name - used to find and update the record
+   * @param {AttendanceStudentDTO} student - used to find and update the record
    */
-  async checkAttendance(name: string) {
+  async checkAttendance(student: AttendanceStudentDTO) {
     const now = new Date();
 
     //Verify if the student exits
     const studentFound = await this.studentRepository.findOne({
       where: {
-        name,
+        name: student.name,
       },
     });
 
@@ -195,7 +197,7 @@ export class StudentService {
 
     //Verify student membership's expiration date
     if (this.isExpired(studentFound.expiration_date)) {
-      this.updateExpiration(name);
+      this.updateExpiration(student.name);
     }
 
     //Verify if is a new day in order to reset attendance
@@ -206,19 +208,19 @@ export class StudentService {
     //Verify student's attendance
     if (studentFound.attendance_today) {
       return new HttpException(
-        `Sorry, ${name} has already attended today`,
+        `Sorry, ${student.name} has already attended today`,
         HttpStatus.FORBIDDEN,
       );
     }
 
     //Update student attendance
     const result = await this.studentRepository.update(
-      { name },
+      { name: student.name },
       { attendance_today: true, update_at: now },
     );
 
     if (result.affected)
-      return { message: `${name}'s attendance check successfully` };
+      return { message: `${student.name}'s attendance check successfully` };
     else
       return new HttpException(
         'Sorry, we could not update the student info',

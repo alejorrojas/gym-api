@@ -8,9 +8,12 @@ import {
   ParseIntPipe,
   Patch,
 } from '@nestjs/common';
-import { CreateProfessorDTO, UpdateProfessorDTO } from './DTO/professor.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { CreateProfessorDTO } from './dto/create-professor.dto';
+import { UpdateProfessorDTO } from './dto/update-professor.dto';
 import { ProfessorService } from './professor.service';
 
+@ApiTags('professor')
 @Controller('professor')
 export class ProfessorController {
   constructor(private service: ProfessorService) {}

@@ -1,4 +1,5 @@
-import { CreateProfessorDTO, UpdateProfessorDTO } from '../DTO/professor.dto';
+import { CreateProfessorDTO } from '../dto/create-professor.dto';
+import { UpdateProfessorDTO } from '../dto/update-professor.dto';
 import { Professor } from '../professor.entity';
 
 const notDuplicate = { message: 'This username already exists' };
