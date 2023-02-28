@@ -9,7 +9,6 @@ import {
   Patch,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateProfessorDTO } from './dto/create-professor.dto';
 import { UpdateProfessorDTO } from './dto/update-professor.dto';
 import { ProfessorService } from './professor.service';
 
@@ -26,11 +25,6 @@ export class ProfessorController {
   @Get(':id')
   getProfessor(@Param('id', ParseIntPipe) id: number) {
     return this.service.findOne(id);
-  }
-
-  @Post()
-  createProfessor(@Body() inputProfessor: CreateProfessorDTO) {
-    return this.service.create(inputProfessor);
   }
 
   @Delete(':id')

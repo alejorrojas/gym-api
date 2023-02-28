@@ -4,12 +4,13 @@ import {
   IsDate,
   IsNotEmpty,
   IsString,
+  Length,
   MinLength,
 } from 'class-validator';
 
 export class ProfessorDTO {
   @ApiProperty({
-    description: 'The ID of the professor',
+    description: "The professor's ID",
     default: 15,
   })
   id: number;
@@ -18,14 +19,15 @@ export class ProfessorDTO {
   @MinLength(3)
   @IsNotEmpty()
   @ApiProperty({
-    description: 'The name of the professor',
-    default: 'Elon Musk',
+    description: "The professor's name",
+    default: 'Elon',
   })
   name: string;
 
   @IsNotEmpty()
+  @Length(5, 14)
   @ApiProperty({
-    description: 'The password of the professor',
+    description: "The professor's password",
     default: 'nestjs<3',
   })
   password: string;

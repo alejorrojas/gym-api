@@ -1,26 +1,40 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { compare } from 'bcryptjs';
+import { Professor } from 'src/professor/professor.entity';
+import { ProfessorService } from 'src/professor/professor.service';
+import { Repository } from 'typeorm';
+import { LoginAuthDto } from './dto/login-auth.dto';
+import { RegisterAuthDto } from './dto/register-auth.dto';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    @InjectRepository(Professor)
+    private professorRepository: Repository<Professor>,
+    private professorService: ProfessorService,
+  ) {}
+
+  register(data: RegisterAuthDto) {
+    return this.professorService.create(data);
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+  async login(data: LoginAuthDto) {
+    const { name, password } = data;
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+    const professorFound = await this.professorRepository.findOne({
+      where: { name },
+    });
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+    if (!professorFound) {
+      return new HttpException('Invalid credentials', HttpStatus.FORBIDDEN);
+    }
+    const validatePassword = await compare(password, professorFound?.password);
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    if (!validatePassword) {
+      return new HttpException('Invalid credentials', HttpStatus.FORBIDDEN);
+    }
+
+    return data;
   }
 }
