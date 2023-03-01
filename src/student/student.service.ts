@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { hash } from 'bcryptjs';
+import { hash } from 'bcrypt';
 import { ProfessorService } from 'src/professor/professor.service';
 import { Repository } from 'typeorm';
 import { AttendanceStudentDTO } from './dto/attendance-student.dto';
@@ -18,7 +18,7 @@ export class StudentService {
   /**
    * Get all the students
    *
-   * Additionally updates the student's "attendance_today" property if is a new calendar day
+   * Additionally sets the student's "attendance_today" property to false if is a new calendar day
    */
   async getAll() {
     const now = new Date();

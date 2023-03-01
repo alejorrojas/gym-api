@@ -6,7 +6,7 @@ export class AppService {
     return {
       message: 'Welcome to the gym-api 🏋️',
       documentation:
-        "Visit the http://localhost:3000/documentation to check the full project's documentation",
+        "Visit the /documentation to check the full project's documentation",
     };
   }
 }

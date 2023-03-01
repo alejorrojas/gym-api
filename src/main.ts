@@ -7,6 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
+    .addBearerAuth()
     .setTitle('gym-api docs')
     .setDescription(
       'The Gym API is an integral solution for modern gym centers',

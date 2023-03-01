@@ -7,13 +7,17 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { AttendanceStudentDTO } from './dto/attendance-student.dto';
 import { CreateStudentDTO } from './dto/create-student.dto';
 import { UpdateStudentDTO } from './dto/update-student.dto';
 import { StudentService } from './student.service';
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @ApiTags('students')
 @Controller('students')
 export class StudentController {
