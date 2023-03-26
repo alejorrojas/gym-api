@@ -16,6 +16,9 @@ export class Professor {
   active: boolean;
 
   @Column()
+  role: string;
+
+  @Column()
   expiration_date: Date;
 
   @OneToMany(() => Student, (student) => student.professor)

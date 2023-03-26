@@ -42,6 +42,7 @@ export class AuthService {
 
     const response = {
       user: data,
+      role: professorFound.role,
       token,
     };
 

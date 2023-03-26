@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { hash } from 'bcrypt';
 import { Professor } from './professor.entity';
+import roles from 'src/roles/roles.types';
 import { CreateProfessorDTO } from './dto/create-professor.dto';
 import { UpdateProfessorDTO } from './dto/update-professor.dto';
 
@@ -67,6 +68,7 @@ export class ProfessorService {
       password: hashPassword,
       active: true,
       expiration_date: date,
+      role: roles.professor,
     };
     const newProf = this.professorRepository.create(normalizeProf);
     return this.professorRepository.save(newProf);

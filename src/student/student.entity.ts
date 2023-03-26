@@ -15,7 +15,7 @@ export class Student {
   @Column({ unique: true })
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
   @Column()
@@ -29,6 +29,9 @@ export class Student {
 
   @UpdateDateColumn()
   update_at: Date;
+
+  @Column()
+  role: string;
 
   @Column()
   professorId: number;

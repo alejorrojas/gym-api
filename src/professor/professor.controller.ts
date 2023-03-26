@@ -1,17 +1,20 @@
 import {
   Controller,
-  Post,
   Body,
   Delete,
   Get,
   Param,
   ParseIntPipe,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UpdateProfessorDTO } from './dto/update-professor.dto';
 import { ProfessorService } from './professor.service';
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @ApiTags('professor')
 @Controller('professor')
 export class ProfessorController {

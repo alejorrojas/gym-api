@@ -1,7 +1,15 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UseGuards,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { hash } from 'bcrypt';
 import { ProfessorService } from 'src/professor/professor.service';
+import { Roles } from 'src/roles/roles.decorator';
+import { RolesGuard } from 'src/roles/roles.guard';
+import roles from 'src/roles/roles.types';
 import { Repository } from 'typeorm';
 import { AttendanceStudentDTO } from './dto/attendance-student.dto';
 import { CreateStudentDTO } from './dto/create-student.dto';
@@ -20,6 +28,8 @@ export class StudentService {
    *
    * Additionally sets the student's "attendance_today" property to false if is a new calendar day
    */
+  @UseGuards(RolesGuard)
+  @Roles('professor', 'admin')
   async getAll() {
     const now = new Date();
     const students = await this.studentRepository.find();
@@ -83,6 +93,7 @@ export class StudentService {
       password: hashPassword,
       active: true,
       expiration_date: date,
+      role: roles.student,
     };
     const newStudent = this.studentRepository.create(normalizeStudent);
     return this.studentRepository.save(newStudent);
